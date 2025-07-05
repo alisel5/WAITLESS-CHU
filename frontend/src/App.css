@@ -1,0 +1,45 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.App {
+  text-align: center;
+  min-height: 100vh;
+  background-color: #f9fafb;
+}
+
+/* Custom styles for the queue management system */
+.queue-card {
+  @apply bg-white rounded-lg shadow-md p-6 m-4;
+}
+
+.department-card {
+  @apply bg-white rounded-lg shadow-md p-6 m-4 hover:shadow-lg transition-shadow cursor-pointer;
+}
+
+.button-primary {
+  @apply bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded;
+}
+
+.button-secondary {
+  @apply bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded;
+}
+
+.button-danger {
+  @apply bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded;
+}
+
+/* QR Code styles */
+.qr-container {
+  @apply flex justify-center items-center p-4 bg-white rounded-lg shadow-md;
+}
+
+/* Position indicator */
+.position-indicator {
+  @apply text-4xl font-bold text-blue-600;
+}
+
+/* Loading spinner */
+.loading-spinner {
+  @apply animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500;
+} 
