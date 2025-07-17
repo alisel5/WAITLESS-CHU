@@ -3,6 +3,7 @@ export interface User {
   name: string;
   email: string;
   phone?: string;
+  role: 'user' | 'admin';
   createdAt: Date;
   updatedAt: Date;
 }
@@ -93,4 +94,23 @@ export interface ApiResponse<T> {
   data?: T;
   message?: string;
   error?: string;
+}
+
+// Authentication types
+export interface RegisterRequest {
+  name: string;
+  email: string;
+  password: string;
+  phone?: string;
+  role?: 'user' | 'admin';
+}
+
+export interface LoginRequest {
+  email: string;
+  password: string;
+}
+
+export interface AuthResponse {
+  user: User;
+  token: string;
 } 

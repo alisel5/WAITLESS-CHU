@@ -6,8 +6,9 @@ import { Server } from 'socket.io';
 import dotenv from 'dotenv';
 import rateLimit from 'express-rate-limit';
 
-import queueRoutes from '@/routes/queueRoutes';
-import redisClient from '@/config/redis';
+import queueRoutes from '../routes/queueRoutes';
+import authRoutes from '../routes/authRoutes';
+import redisClient from '../config/redis';
 
 dotenv.config();
 
@@ -56,6 +57,7 @@ app.get('/health', (req, res) => {
 });
 
 // API routes
+app.use('/api/auth', authRoutes);
 app.use('/api/queue', queueRoutes);
 
 // Socket.io connection handling

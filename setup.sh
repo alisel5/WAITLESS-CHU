@@ -17,7 +17,7 @@ fi
 if [ ! -f .env ]; then
     echo "📝 Creating .env file..."
     cp env.example .env
-    echo "✅ .env file created. Please edit it with your database credentials."
+    echo "✅ .env file created with Docker configuration."
 else
     echo "✅ .env file already exists."
 fi

@@ -1,15 +1,11 @@
--- Create database
-CREATE DATABASE waitless_chu;
-
--- Connect to the database
-\c waitless_chu;
-
 -- Create users table
 CREATE TABLE users (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     name VARCHAR(255) NOT NULL,
     email VARCHAR(255) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,
     phone VARCHAR(20),
+    role VARCHAR(20) NOT NULL DEFAULT 'user' CHECK (role IN ('user', 'admin')),
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
@@ -88,10 +84,14 @@ INSERT INTO departments (name, description, estimated_time_per_patient) VALUES
 ('Pediatrics', 'Children''s health and development', 35),
 ('Radiology', 'Medical imaging and diagnostics', 25);
 
--- Insert sample users
-INSERT INTO users (name, email, phone) VALUES
-('John Doe', 'john.doe@example.com', '+1234567890'),
-('Jane Smith', 'jane.smith@example.com', '+1234567891'),
-('Bob Johnson', 'bob.johnson@example.com', '+1234567892'),
-('Alice Brown', 'alice.brown@example.com', '+1234567893'),
-('Charlie Wilson', 'charlie.wilson@example.com', '+1234567894'); 
+-- Insert sample admin user (password: admin123)
+INSERT INTO users (name, email, password, phone, role) VALUES
+('Admin User', 'admin@waitless-chu.com', '$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewdBPj4J/HS.iK2O', '+1234567890', 'admin');
+
+-- Insert sample regular users (password: user123)
+INSERT INTO users (name, email, password, phone) VALUES
+('John Doe', 'john.doe@example.com', '$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewdBPj4J/HS.iK2O', '+1234567891'),
+('Jane Smith', 'jane.smith@example.com', '$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewdBPj4J/HS.iK2O', '+1234567892'),
+('Bob Johnson', 'bob.johnson@example.com', '$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewdBPj4J/HS.iK2O', '+1234567893'),
+('Alice Brown', 'alice.brown@example.com', '$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewdBPj4J/HS.iK2O', '+1234567894'),
+('Charlie Wilson', 'charlie.wilson@example.com', '$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewdBPj4J/HS.iK2O', '+1234567895'); 

@@ -1,129 +1,136 @@
-// API service functions for connecting to the backend
-// Your teammate will implement these functions
+import axios, { AxiosInstance, AxiosResponse } from 'axios';
+import { 
+  ApiResponse, 
+  User, 
+  Department, 
+  QueueTicket, 
+  QueueStats, 
+  CreateTicketRequest, 
+  UpdateTicketRequest,
+  LoginRequest,
+  RegisterRequest,
+  AuthResponse
+} from '../types';
 
-const API_BASE = process.env.REACT_APP_API_URL || 'http://localhost:3001';
+class ApiService {
+  private api: AxiosInstance;
 
-export interface ApiResponse<T> {
-  success: boolean;
-  data?: T;
-  message?: string;
-  error?: string;
+  constructor() {
+    this.api = axios.create({
+      baseURL: process.env.REACT_APP_API_URL || 'http://localhost:3001/api',
+      timeout: 10000,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    // Request interceptor to add auth token
+    this.api.interceptors.request.use(
+      (config) => {
+        const token = localStorage.getItem('token');
+        if (token) {
+          config.headers.Authorization = `Bearer ${token}`;
+        }
+        return config;
+      },
+      (error) => {
+        return Promise.reject(error);
+      }
+    );
+
+    // Response interceptor to handle errors
+    this.api.interceptors.response.use(
+      (response: AxiosResponse) => response,
+      (error) => {
+        if (error.response?.status === 401) {
+          localStorage.removeItem('token');
+          localStorage.removeItem('user');
+          window.location.href = '/login';
+        }
+        return Promise.reject(error);
+      }
+    );
+  }
+
+  // Authentication endpoints
+  async login(credentials: LoginRequest): Promise<AuthResponse> {
+    const response = await this.api.post<ApiResponse<AuthResponse>>('/auth/login', credentials);
+    return response.data.data!;
+  }
+
+  async register(userData: RegisterRequest): Promise<AuthResponse> {
+    const response = await this.api.post<ApiResponse<AuthResponse>>('/auth/register', userData);
+    return response.data.data!;
+  }
+
+  async getCurrentUser(): Promise<User> {
+    const response = await this.api.get<ApiResponse<User>>('/auth/me');
+    return response.data.data!;
+  }
+
+  // Queue endpoints
+  async createTicket(request: CreateTicketRequest): Promise<QueueTicket> {
+    const response = await this.api.post<ApiResponse<QueueTicket>>('/queue/tickets', request);
+    return response.data.data!;
+  }
+
+  async getTicketById(ticketId: string): Promise<QueueTicket> {
+    const response = await this.api.get<ApiResponse<QueueTicket>>(`/queue/tickets/${ticketId}`);
+    return response.data.data!;
+  }
+
+  async getTicketByQRCode(qrCodeData: string): Promise<QueueTicket> {
+    const response = await this.api.post<ApiResponse<QueueTicket>>('/queue/tickets/qr', { qrCodeData });
+    return response.data.data!;
+  }
+
+  async updateTicket(ticketId: string, updates: UpdateTicketRequest): Promise<QueueTicket> {
+    const response = await this.api.patch<ApiResponse<QueueTicket>>(`/queue/tickets/${ticketId}`, updates);
+    return response.data.data!;
+  }
+
+  async callNextTicket(departmentId: string): Promise<QueueTicket> {
+    const response = await this.api.post<ApiResponse<QueueTicket>>(`/queue/departments/${departmentId}/call-next`);
+    return response.data.data!;
+  }
+
+  async completeTicket(ticketId: string): Promise<QueueTicket> {
+    const response = await this.api.post<ApiResponse<QueueTicket>>(`/queue/tickets/${ticketId}/complete`);
+    return response.data.data!;
+  }
+
+  async handleMissedTicket(ticketId: string): Promise<QueueTicket> {
+    const response = await this.api.post<ApiResponse<QueueTicket>>(`/queue/tickets/${ticketId}/missed`);
+    return response.data.data!;
+  }
+
+  async getQueueStats(departmentId: string): Promise<QueueStats> {
+    const response = await this.api.get<ApiResponse<QueueStats>>(`/queue/departments/${departmentId}/stats`);
+    return response.data.data!;
+  }
+
+  async getUserTickets(userId: string): Promise<QueueTicket[]> {
+    const response = await this.api.get<ApiResponse<QueueTicket[]>>(`/queue/users/${userId}/tickets`);
+    return response.data.data!;
+  }
+
+  // Department endpoints
+  async getDepartments(): Promise<Department[]> {
+    const response = await this.api.get<ApiResponse<Department[]>>('/departments');
+    return response.data.data!;
+  }
+
+  async getDepartmentById(departmentId: string): Promise<Department> {
+    const response = await this.api.get<ApiResponse<Department>>(`/departments/${departmentId}`);
+    return response.data.data!;
+  }
+
+  // Health check
+  async healthCheck(): Promise<{ success: boolean; message: string }> {
+    const response = await this.api.get('/health');
+    return response.data;
+  }
 }
 
-// Queue Management API calls
-export const queueApi = {
-  // Create a new ticket
-  createTicket: async (userId: string, departmentId: string) => {
-    const response = await fetch(`${API_BASE}/api/queue/tickets`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ userId, departmentId })
-    });
-    return response.json();
-  },
-
-  // Get ticket by ID
-  getTicket: async (ticketId: string) => {
-    const response = await fetch(`${API_BASE}/api/queue/tickets/${ticketId}`);
-    return response.json();
-  },
-
-  // Get ticket by QR code
-  getTicketByQR: async (qrCodeData: string) => {
-    const response = await fetch(`${API_BASE}/api/queue/tickets/qr`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ qrCodeData })
-    });
-    return response.json();
-  },
-
-  // Update ticket status
-  updateTicket: async (ticketId: string, updates: any) => {
-    const response = await fetch(`${API_BASE}/api/queue/tickets/${ticketId}`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(updates)
-    });
-    return response.json();
-  },
-
-  // Complete a ticket
-  completeTicket: async (ticketId: string) => {
-    const response = await fetch(`${API_BASE}/api/queue/tickets/${ticketId}/complete`, {
-      method: 'POST'
-    });
-    return response.json();
-  },
-
-  // Handle missed ticket
-  handleMissedTicket: async (ticketId: string) => {
-    const response = await fetch(`${API_BASE}/api/queue/tickets/${ticketId}/missed`, {
-      method: 'POST'
-    });
-    return response.json();
-  }
-};
-
-// Department API calls
-export const departmentApi = {
-  // Call next ticket in queue
-  callNextTicket: async (departmentId: string) => {
-    const response = await fetch(`${API_BASE}/api/queue/departments/${departmentId}/call-next`, {
-      method: 'POST'
-    });
-    return response.json();
-  },
-
-  // Get queue statistics
-  getStats: async (departmentId: string) => {
-    const response = await fetch(`${API_BASE}/api/queue/departments/${departmentId}/stats`);
-    return response.json();
-  }
-};
-
-// User API calls
-export const userApi = {
-  // Get user's active tickets
-  getUserTickets: async (userId: string) => {
-    const response = await fetch(`${API_BASE}/api/queue/users/${userId}/tickets`);
-    return response.json();
-  }
-};
-
-// Health check
-export const healthCheck = async () => {
-  const response = await fetch(`${API_BASE}/health`);
-  return response.json();
-};
-
-// Example usage:
-/*
-import { queueApi, departmentApi } from './api';
-
-// Create a ticket
-const createTicket = async () => {
-  try {
-    const result = await queueApi.createTicket('user-123', 'dept-456');
-    if (result.success) {
-      console.log('Ticket created:', result.data);
-    } else {
-      console.error('Error:', result.error);
-    }
-  } catch (error) {
-    console.error('API call failed:', error);
-  }
-};
-
-// Get queue stats
-const getStats = async () => {
-  try {
-    const result = await departmentApi.getStats('dept-456');
-    if (result.success) {
-      console.log('Queue stats:', result.data);
-    }
-  } catch (error) {
-    console.error('API call failed:', error);
-  }
-};
-*/ 
+export const apiService = new ApiService();
+export default apiService; 
