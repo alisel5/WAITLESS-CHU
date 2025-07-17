@@ -12,23 +12,22 @@ Smart Queue Management System for CHU – Real-time queueing, QR code tickets, a
 - **User Dashboard**: Personal ticket tracking and history
 - **Staff Interface**: Tools for calling next patients and managing queues
 
-## 📁 Project Structure (Monorepo)
+## 📁 Project Structure
 
 ```
 WAITLESS-CHU/
-├── backend/              # 🖥️ Backend API (Your part)
-│   ├── src/
-│   │   ├── config/       # Database and Redis config
-│   │   ├── routes/       # API endpoints
-│   │   ├── services/     # Business logic
-│   │   ├── types/        # TypeScript types
-│   │   └── server/       # Main server
+├── backend/              # Backend API
+│   ├── config/           # Database and Redis config
+│   ├── routes/           # API endpoints
+│   ├── services/         # Business logic
+│   ├── types/            # TypeScript types
+│   ├── server/           # Main server
 │   ├── database/         # SQL schema
 │   ├── package.json      # Backend dependencies
 │   ├── Dockerfile        # Backend container
 │   └── README.md         # Backend setup guide
 │
-├── frontend/             # 🎨 Frontend React App (Your teammate's part)
+├── frontend/             # Frontend React App
 │   ├── src/
 │   │   ├── components/   # React components
 │   │   ├── pages/        # Page components
@@ -40,21 +39,21 @@ WAITLESS-CHU/
 │   ├── Dockerfile        # Frontend container
 │   └── README.md         # Frontend setup guide
 │
-├── docker-compose.yml    # 🐳 All services together
-├── setup.sh             # 🚀 Quick setup script
+├── docker-compose.yml    # All services together
+├── setup.sh             # Quick setup script
 └── README.md            # This file
 ```
 
 ## 🛠 Tech Stack
 
-### Backend (Your Part) 🖥️
+### Backend
 - **Node.js** + **TypeScript** + **Express**
 - **PostgreSQL** for data persistence
 - **Redis** for caching and real-time features
 - **Socket.io** for real-time communications
 - **QR Code generation** for digital tickets
 
-### Frontend (Your Teammate's Part) 🎨
+### Frontend
 - **React** + **TypeScript**
 - **Tailwind CSS** for styling
 - **Socket.io Client** for real-time updates
@@ -62,9 +61,13 @@ WAITLESS-CHU/
 
 ## 🚀 Quick Start
 
-### Option 1: Everything Together (Docker)
+### Option 1: Docker (Recommended)
 
 ```bash
+# Clone the repository
+git clone <repository-url>
+cd waitless-chu
+
 # Start all services
 docker-compose up -d
 
@@ -73,18 +76,18 @@ docker-compose up -d
 # Backend API: http://localhost:3001
 ```
 
-### Option 2: Independent Development
+### Option 2: Local Development
 
-#### Backend Development (You)
+#### Backend Setup
 ```bash
 cd backend
 npm install
-cp ../env.example .env
+cp .env.example .env
 # Edit .env with your database settings
-npm run dev
+npm run dev:server
 ```
 
-#### Frontend Development (Your Teammate)
+#### Frontend Setup
 ```bash
 cd frontend
 npm install
@@ -93,28 +96,12 @@ npm start
 
 ## 📋 Prerequisites
 
-- Node.js 18+ 
-- Docker & Docker Compose
+- Node.js 18+
+- Docker & Docker Compose (for containerized setup)
 - PostgreSQL (if running locally)
 - Redis (if running locally)
 
-## 🔧 Development Workflow
-
-### For You (Backend) 🖥️
-1. Work in the `backend/` folder
-2. API endpoints are ready to use
-3. Database schema is set up
-4. Real-time features with Socket.io
-5. Test with Postman or curl
-
-### For Your Teammate (Frontend) 🎨
-1. Work in the `frontend/` folder
-2. React app is set up with TypeScript
-3. All UI dependencies are installed
-4. API service functions are ready
-5. Real-time updates with Socket.io client
-
-## 📊 API Endpoints (Backend)
+## 📊 API Endpoints
 
 ### Queue Management
 - `POST /api/queue/tickets` - Create new ticket
@@ -131,7 +118,12 @@ npm start
 ### User Operations
 - `GET /api/queue/users/:userId/tickets` - Get user's active tickets
 
-## 🎯 Core Features Implementation
+### Authentication
+- `POST /api/auth/login` - User login
+- `POST /api/auth/register` - User registration
+- `POST /api/auth/logout` - User logout
+
+## 🎯 Core Features
 
 ### 1. Queue Management
 - Automatic position assignment
@@ -155,6 +147,24 @@ npm start
 - Individual queue management
 - Department-specific settings
 
+## 🔧 Development
+
+### Backend Development
+```bash
+cd backend
+npm run dev:server    # Start with hot reload
+npm test             # Run tests
+npm run build        # Build for production
+```
+
+### Frontend Development
+```bash
+cd frontend
+npm start            # Start development server
+npm test             # Run tests
+npm run build        # Build for production
+```
+
 ## 🧪 Testing
 
 ```bash
@@ -170,40 +180,41 @@ cd frontend && npm test
 ### Production Build
 
 ```bash
-# Build everything
+# Build everything with Docker
 docker-compose -f docker-compose.prod.yml up -d
 ```
 
-## 🤝 Team Workflow
+### Environment Variables
 
-### Daily Work
-1. **You**: Work on backend features, API endpoints, database
-2. **Your Teammate**: Work on frontend UI, components, user experience
-3. **Communication**: Use the API endpoints as your contract
+Create `.env` files in both backend and frontend directories with appropriate production values:
 
-### Merging Strategy
-1. **Backend First**: You complete API endpoints
-2. **Frontend Integration**: Your teammate connects to your APIs
-3. **Testing Together**: Test the full flow
-4. **Deploy**: Use Docker Compose for final deployment
+- Database credentials
+- Redis connection
+- JWT secrets
+- API URLs
 
-### Git Workflow
-```bash
-# You work on backend
-git checkout -b feature/backend-queue-management
-# ... work on backend
-git push origin feature/backend-queue-management
+## 📱 User Roles
 
-# Your teammate works on frontend
-git checkout -b feature/frontend-queue-interface
-# ... work on frontend
-git push origin feature/frontend-queue-interface
+### Patients
+- Create queue tickets
+- Track position in real-time
+- Receive notifications
+- View ticket history
 
-# Merge when ready
-git checkout main
-git merge feature/backend-queue-management
-git merge feature/frontend-queue-interface
-```
+### Staff/Admin
+- Call next patients
+- Manage queues
+- View department statistics
+- Handle missed tickets
+
+## 🔐 Security Features
+
+- JWT authentication
+- Password hashing
+- Rate limiting
+- CORS protection
+- Input validation
+- Secure headers
 
 ## 📝 License
 
@@ -213,24 +224,8 @@ This project is licensed under the MIT License.
 
 For support and questions:
 - Create an issue in the repository
-- Contact the development team
+- Check the documentation in individual README files
 
 ---
 
 **Built with ❤️ for better healthcare queue management**
-
-### 🎯 19-Day Timeline
-
-**Week 1 (Days 1-7): Setup & Core Backend**
-- Day 1-2: Project setup, database, basic API
-- Day 3-5: Queue management, QR codes, real-time features
-- Day 6-7: Testing and documentation
-
-**Week 2 (Days 8-14): Frontend Development**
-- Day 8-10: Basic UI components, routing
-- Day 11-13: Queue interface, QR scanning, real-time updates
-- Day 14: Testing and UI polish
-
-**Week 3 (Days 15-19): Integration & Polish**
-- Day 15-17: Backend-Frontend integration, testing
-- Day 18-19: Final testing, documentation, demo prep
