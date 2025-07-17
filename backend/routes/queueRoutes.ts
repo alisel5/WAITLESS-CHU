@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import { QueueService } from '@/services/queueService';
-import { ApiResponse, CreateTicketRequest, UpdateTicketRequest } from '@/types';
+import { QueueService } from '../services/queueService';
+import { ApiResponse, CreateTicketRequest, UpdateTicketRequest } from '../types';
 
 const router = Router();
 const queueService = new QueueService();
@@ -26,7 +26,7 @@ router.post('/tickets', async (req, res) => {
     } as ApiResponse<typeof ticket>);
   } catch (error) {
     console.error('Error creating ticket:', error);
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
       error: 'Failed to create ticket'
     } as ApiResponse<null>);
@@ -52,7 +52,7 @@ router.get('/tickets/:ticketId', async (req, res) => {
     } as ApiResponse<typeof ticket>);
   } catch (error) {
     console.error('Error getting ticket:', error);
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
       error: 'Failed to get ticket'
     } as ApiResponse<null>);
@@ -86,7 +86,7 @@ router.post('/tickets/qr', async (req, res) => {
     } as ApiResponse<typeof ticket>);
   } catch (error) {
     console.error('Error getting ticket by QR:', error);
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
       error: 'Failed to get ticket'
     } as ApiResponse<null>);
@@ -115,7 +115,7 @@ router.patch('/tickets/:ticketId', async (req, res) => {
     } as ApiResponse<typeof ticket>);
   } catch (error) {
     console.error('Error updating ticket:', error);
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
       error: 'Failed to update ticket'
     } as ApiResponse<null>);
@@ -142,7 +142,7 @@ router.post('/departments/:departmentId/call-next', async (req, res) => {
     } as ApiResponse<typeof ticket>);
   } catch (error) {
     console.error('Error calling next ticket:', error);
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
       error: 'Failed to call next ticket'
     } as ApiResponse<null>);
@@ -169,7 +169,7 @@ router.post('/tickets/:ticketId/complete', async (req, res) => {
     } as ApiResponse<typeof ticket>);
   } catch (error) {
     console.error('Error completing ticket:', error);
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
       error: 'Failed to complete ticket'
     } as ApiResponse<null>);
@@ -196,7 +196,7 @@ router.post('/tickets/:ticketId/missed', async (req, res) => {
     } as ApiResponse<typeof ticket>);
   } catch (error) {
     console.error('Error handling missed ticket:', error);
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
       error: 'Failed to handle missed ticket'
     } as ApiResponse<null>);
@@ -215,7 +215,7 @@ router.get('/departments/:departmentId/stats', async (req, res) => {
     } as ApiResponse<typeof stats>);
   } catch (error) {
     console.error('Error getting queue stats:', error);
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
       error: 'Failed to get queue statistics'
     } as ApiResponse<null>);
@@ -234,7 +234,7 @@ router.get('/users/:userId/tickets', async (req, res) => {
     } as ApiResponse<typeof tickets>);
   } catch (error) {
     console.error('Error getting user tickets:', error);
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
       error: 'Failed to get user tickets'
     } as ApiResponse<null>);

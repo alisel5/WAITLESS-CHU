@@ -1,8 +1,8 @@
 import { v4 as uuidv4 } from 'uuid';
 import QRCode from 'qrcode';
-import pool from '@/config/database';
-import redisClient from '@/config/redis';
-import { QueueTicket, TicketStatus, CreateTicketRequest, UpdateTicketRequest, QueueStats } from '@/types';
+import pool from '../config/database';
+import redisClient from '../config/redis';
+import { QueueTicket, TicketStatus, CreateTicketRequest, UpdateTicketRequest, QueueStats } from '../types';
 
 export class QueueService {
   // Create a new ticket and join the queue

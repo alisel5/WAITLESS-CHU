@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Votre ticket - WaitLess</title>
+  <link rel="stylesheet" href="ticket.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+</head>
+<header class="navbar">
+  <div class="logo">
+    <img src="../Acceuil/public/logofinal.png" alt="WaitLess Logo" class="logo-img">
+  </div>
+  <nav>
+    <ul>
+      <li><a href="../Acceuil/acceuil.html">Accueil</a></li>
+      <li><a href="../qr code/qr.html">Scanner</a></li>
+      <li><a href="../ticket/ticket.html?code=DEMO">Suivi</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+</header>
+
+<body>
+
+  <div class="ticket-container">
+    <h1> Détails de votre ticket</h1>
+
+    <div class="ticket-box">
+      <p><strong>Code Ticket :</strong> <span id="ticketCode">...</span></p>
+      <p><strong>Personnes devant vous :</strong> <span id="peopleAhead">...</span></p>
+      <p><strong>Temps estimé :</strong> <span id="estimatedTime">...</span></p>
+      <button onclick="refreshTicket()">Actualiser</button>
+    </div>
+  </div>
+
+  <script src="ticket.js"></script>
+</body>
+</html>
